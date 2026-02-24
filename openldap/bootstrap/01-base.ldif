@@ -1,0 +1,9 @@
+# People OU
+dn: ou=People,dc=reddedeliveries,dc=local
+objectClass: organizationalUnit
+ou: People
+
+# Groups OU
+dn: ou=Groups,dc=reddedeliveries,dc=local
+objectClass: organizationalUnit
+ou: Groups

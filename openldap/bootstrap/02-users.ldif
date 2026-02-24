@@ -1,0 +1,83 @@
+# ==================== USERS ====================
+
+# Despacho Employee
+dn: uid=jperez,ou=People,dc=reddedeliveries,dc=local
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: jperez
+cn: Juan Perez
+sn: Perez
+givenName: Juan
+mail: jperez@reddedeliveries.local
+userPassword: despacho123
+uidNumber: 1001
+gidNumber: 1001
+homeDirectory: /home/jperez
+
+# Mostrador Employee
+dn: uid=mgarcia,ou=People,dc=reddedeliveries,dc=local
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: mgarcia
+cn: Maria Garcia
+sn: Garcia
+givenName: Maria
+mail: mgarcia@reddedeliveries.local
+userPassword: mostrador123
+uidNumber: 1002
+gidNumber: 1002
+homeDirectory: /home/mgarcia
+
+# Atencion al Cliente Employee
+dn: uid=lrodriguez,ou=People,dc=reddedeliveries,dc=local
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: lrodriguez
+cn: Laura Rodriguez
+sn: Rodriguez
+givenName: Laura
+mail: lrodriguez@reddedeliveries.local
+userPassword: atencion123
+uidNumber: 1003
+gidNumber: 1003
+homeDirectory: /home/lrodriguez
+
+# Admin
+dn: uid=admin,ou=People,dc=reddedeliveries,dc=local
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: admin
+cn: Administrador
+sn: Admin
+givenName: Admin
+mail: admin@reddedeliveries.local
+userPassword: admin123
+uidNumber: 1000
+gidNumber: 1000
+homeDirectory: /home/admin
+
+# ==================== GROUPS ====================
+
+dn: cn=despacho,ou=Groups,dc=reddedeliveries,dc=local
+objectClass: groupOfNames
+cn: despacho
+member: uid=jperez,ou=People,dc=reddedeliveries,dc=local
+
+dn: cn=mostrador,ou=Groups,dc=reddedeliveries,dc=local
+objectClass: groupOfNames
+cn: mostrador
+member: uid=mgarcia,ou=People,dc=reddedeliveries,dc=local
+
+dn: cn=atencion,ou=Groups,dc=reddedeliveries,dc=local
+objectClass: groupOfNames
+cn: atencion
+member: uid=lrodriguez,ou=People,dc=reddedeliveries,dc=local
+
+dn: cn=admin,ou=Groups,dc=reddedeliveries,dc=local
+objectClass: groupOfNames
+cn: admin
+member: uid=admin,ou=People,dc=reddedeliveries,dc=local

@@ -1,0 +1,153 @@
+services:
+  # === DATABASE ===
+  postgres:
+    image: postgres:16-alpine
+    container_name: redde-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-reddedeliveries}
+      POSTGRES_USER: ${POSTGRES_USER:-redde}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-redde_secret}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./central-server/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - internal
+    restart: unless-stopped
+
+  # === OPENLDAP ===
+  openldap:
+    build: ./openldap
+    container_name: redde-openldap
+    environment:
+      LDAP_ORGANISATION: "Red de Deliveries"
+      LDAP_DOMAIN: "reddedeliveries.local"
+      LDAP_ADMIN_PASSWORD: ${LDAP_ADMIN_PASSWORD:-admin_secret}
+    volumes:
+      - ldap_data:/var/lib/ldap
+      - ldap_config:/etc/ldap/slapd.d
+    networks:
+      - internal
+    restart: unless-stopped
+
+  # === CENTRAL SERVER ===
+  central-server:
+    build: ./central-server
+    container_name: redde-central
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB:-reddedeliveries}
+      DB_USER: ${POSTGRES_USER:-redde}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-redde_secret}
+      LDAP_URL: ldap://openldap:389
+      LDAP_BIND_DN: cn=admin,dc=reddedeliveries,dc=local
+      LDAP_BIND_PASSWORD: ${LDAP_ADMIN_PASSWORD:-admin_secret}
+      LDAP_BASE_DN: dc=reddedeliveries,dc=local
+      PORT: 3000
+    depends_on:
+      - postgres
+      - openldap
+    networks:
+      - internal
+      - dmz
+    restart: unless-stopped
+
+  # === HOST: DESPACHO ===
+  despacho:
+    build:
+      context: ./hosts
+      args:
+        HOST_APP: despacho
+    container_name: redde-despacho
+    environment:
+      API_URL: http://central-server:3000
+      LDAP_URL: ldap://openldap:389
+      HOST_ROLE: despacho
+    depends_on:
+      - central-server
+    networks:
+      - internal
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+  # === HOST: MOSTRADOR ===
+  mostrador:
+    build:
+      context: ./hosts
+      args:
+        HOST_APP: mostrador
+    container_name: redde-mostrador
+    environment:
+      API_URL: http://central-server:3000
+      LDAP_URL: ldap://openldap:389
+      HOST_ROLE: mostrador
+    depends_on:
+      - central-server
+    networks:
+      - internal
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+  # === HOST: ATENCION AL CLIENTE ===
+  atencion:
+    build:
+      context: ./hosts
+      args:
+        HOST_APP: atencion
+    container_name: redde-atencion
+    environment:
+      API_URL: http://central-server:3000
+      LDAP_URL: ldap://openldap:389
+      HOST_ROLE: atencion
+    depends_on:
+      - central-server
+    networks:
+      - internal
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+  # === HOST: ADMIN ===
+  admin:
+    build:
+      context: ./hosts
+      args:
+        HOST_APP: admin
+    container_name: redde-admin
+    environment:
+      API_URL: http://central-server:3000
+      LDAP_URL: ldap://openldap:389
+      HOST_ROLE: admin
+    depends_on:
+      - central-server
+    networks:
+      - internal
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+  # === TRACKING FRONTEND ===
+  tracking-frontend:
+    build: ./tracking-frontend
+    container_name: redde-tracking
+    ports:
+      - "8080:80"
+    depends_on:
+      - central-server
+    networks:
+      - dmz
+    restart: unless-stopped
+
+networks:
+  internal:
+    driver: bridge
+    internal: true   # No external/internet access - CRITICAL for security
+  dmz:
+    driver: bridge   # External access allowed (for port mapping)
+
+volumes:
+  postgres_data:
+  ldap_data:
+  ldap_config:

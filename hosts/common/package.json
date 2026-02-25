@@ -1,0 +1,11 @@
+{
+  "name": "redde-hosts-common",
+  "version": "1.0.0",
+  "dependencies": {
+    "readline-sync": "^1.4.10",
+    "cli-table3": "^0.6.3",
+    "chalk": "^4.1.2",
+    "node-fetch": "^2.7.0"
+  }
+}
+

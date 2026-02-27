@@ -27,6 +27,25 @@ router.get('/search', async (req, res) => {
   }
 });
 
+// GET /api/customers/complaints — list all complaints (atencion and admin)
+router.get('/complaints', async (req, res) => {
+  if (req.user.role !== 'atencion' && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Atencion or admin access required' });
+  }
+
+  try {
+    const { rows } = await pool.query(
+      `SELECT c.id, s.tracking_code, c.customer_name, c.description, c.status, c.created_at
+       FROM complaints c
+       JOIN shipments s ON s.id = c.shipment_id
+       ORDER BY c.created_at DESC`
+    );
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // POST /api/customers/complaint — register a complaint (atencion only)
 router.post('/complaint', async (req, res) => {
   if (req.user.role !== 'atencion') {

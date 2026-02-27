@@ -1,12 +1,12 @@
-const api = require(''../../common/src/api-client'');
-const { header, pause, menu, table, statusColor, formatDate } = require(''../../common/src/ui'');
-const readlineSync = require(''readline-sync'');
+const api = require('../../common/src/api-client');
+const { header, pause, menu, table, statusColor, formatDate } = require('../../common/src/ui');
+const readlineSync = require('readline-sync');
 
 async function login() {
-  header(''ATENCION AL CLIENTE - Red de Deliveries'');
-  console.log(''Ingrese sus credenciales:\n'');
-  const uid = readlineSync.question(''Usuario: '');
-  const password = readlineSync.question(''Contrasena: '', { hideEchoBack: true });
+  header('ATENCION AL CLIENTE - Red de Deliveries');
+  console.log('Ingrese sus credenciales:\n');
+  const uid = readlineSync.question('Usuario: ');
+  const password = readlineSync.question('Contrasena: ', { hideEchoBack: true });
   const user = await api.login(uid, password);
   console.log(`\nBienvenido, ${user.name || uid}`);
   await new Promise(r => setTimeout(r, 1000));
@@ -14,44 +14,44 @@ async function login() {
 }
 
 async function buscarPorCodigo() {
-  header(''ATENCION AL CLIENTE - Buscar por Codigo'');
-  const trackingCode = readlineSync.question(''Codigo de tracking: '');
+  header('ATENCION AL CLIENTE - Buscar por Codigo');
+  const trackingCode = readlineSync.question('Codigo de tracking: ');
   try {
     const shipments = await api.getShipments();
     const shipment = shipments.find(s => s.tracking_code === trackingCode);
-    if (!shipment) throw new Error(''Envio no encontrado'');
+    if (!shipment) throw new Error('Envio no encontrado');
     const detail = await api.getShipment(shipment.id);
     console.log(`\n--- Detalles ---`);
-    console.log(`Codigo:       ${detail.tracking_code}`);
-    console.log(`Remitente:    ${detail.sender_name}`);
-    console.log(`Destinatario: ${detail.receiver_name}`);
-    console.log(`Descripcion:  ${detail.description}`);
-    console.log(`Estado:       ${statusColor(detail.status)}`);
+    console.log(`Codigo:       ${detail.shipment.tracking_code}`);
+    console.log(`Remitente:    ${detail.shipment.sender_name}`);
+    console.log(`Destinatario: ${detail.shipment.receiver_name}`);
+    console.log(`Descripcion:  ${detail.shipment.description}`);
+    console.log(`Estado:       ${statusColor(detail.shipment.status)}`);
     console.log(`\nHistorial:`);
     if (detail.history && detail.history.length > 0) {
       table(
-        [''Estado'', ''Fecha'', ''Notas''],
-        detail.history.map(h => [statusColor(h.status), formatDate(h.changed_at), h.notes || ''-''])
+        ['Estado', 'Fecha', 'Notas'],
+        detail.history.map(h => [statusColor(h.status), formatDate(h.updated_at), h.notes || '-'])
       );
     } else {
-      console.log(''  Sin historial registrado.'');
+      console.log('  Sin historial registrado.');
     }
   } catch (e) {
-    console.error(''Error:'', e.message);
+    console.error('Error:', e.message);
   }
   pause();
 }
 
 async function buscarPorNombre() {
-  header(''ATENCION AL CLIENTE - Buscar por Nombre'');
-  const nombre = readlineSync.question(''Nombre del cliente: '');
+  header('ATENCION AL CLIENTE - Buscar por Nombre');
+  const nombre = readlineSync.question('Nombre del cliente: ');
   try {
     const results = await api.searchCustomer(nombre);
     if (!results || results.length === 0) {
-      console.log(''No se encontraron envios para ese cliente.'');
+      console.log('No se encontraron envios para ese cliente.');
     } else {
       table(
-        [''Codigo'', ''Remitente'', ''Destinatario'', ''Estado'', ''Fecha''],
+        ['Codigo', 'Remitente', 'Destinatario', 'Estado', 'Fecha'],
         results.map(s => [
           s.tracking_code,
           s.sender_name,
@@ -62,46 +62,49 @@ async function buscarPorNombre() {
       );
     }
   } catch (e) {
-    console.error(''Error:'', e.message);
+    console.error('Error:', e.message);
   }
   pause();
 }
 
 async function registrarQueja() {
-  header(''ATENCION AL CLIENTE - Registrar Queja/Reclamo'');
-  const tracking_code = readlineSync.question(''Codigo de tracking: '');
-  const customer_name = readlineSync.question(''Nombre del cliente: '');
-  const description = readlineSync.question(''Descripcion del reclamo: '');
+  header('ATENCION AL CLIENTE - Registrar Queja/Reclamo');
+  const tracking_code = readlineSync.question('Codigo de tracking: ');
+  const customer_name = readlineSync.question('Nombre del cliente: ');
+  const description = readlineSync.question('Descripcion del reclamo: ');
   try {
-    await api.createComplaint({ tracking_code, customer_name, description });
-    console.log(''\nQueja registrada exitosamente.'');
+    const shipments = await api.getShipments();
+    const shipment = shipments.find(s => s.tracking_code === tracking_code);
+    if (!shipment) throw new Error('Envio no encontrado');
+    await api.createComplaint({ shipment_id: shipment.id, customer_name, description });
+    console.log('\nQueja registrada exitosamente.');
   } catch (e) {
-    console.error(''Error:'', e.message);
+    console.error('Error:', e.message);
   }
   pause();
 }
 
 async function verQuejasAbiertas() {
-  header(''ATENCION AL CLIENTE - Quejas Abiertas'');
+  header('ATENCION AL CLIENTE - Quejas Abiertas');
   try {
     const complaints = await api.getComplaints();
-    const open = complaints.filter(c => c.status === ''abierta'');
+    const open = complaints.filter(c => c.status === 'abierta');
     if (open.length === 0) {
-      console.log(''No hay quejas abiertas.'');
+      console.log('No hay quejas abiertas.');
     } else {
       table(
-        [''ID'', ''Tracking'', ''Cliente'', ''Descripcion'', ''Fecha''],
+        ['ID', 'Tracking', 'Cliente', 'Descripcion', 'Fecha'],
         open.map(c => [
           c.id,
           c.tracking_code,
           c.customer_name,
-          c.description.substring(0, 40) + (c.description.length > 40 ? ''...'' : ''''),
+          c.description.substring(0, 40) + (c.description.length > 40 ? '...' : ''),
           formatDate(c.created_at),
         ])
       );
     }
   } catch (e) {
-    console.error(''Error:'', e.message);
+    console.error('Error:', e.message);
   }
   pause();
 }
@@ -119,12 +122,12 @@ async function main() {
 
   let running = true;
   while (running) {
-    header(''ATENCION AL CLIENTE - Red de Deliveries'');
+    header('ATENCION AL CLIENTE - Red de Deliveries');
     const choice = menu([
-      ''Buscar por codigo de tracking'',
-      ''Buscar por nombre de cliente'',
-      ''Registrar queja/reclamo'',
-      ''Ver quejas abiertas'',
+      'Buscar por codigo de tracking',
+      'Buscar por nombre de cliente',
+      'Registrar queja/reclamo',
+      'Ver quejas abiertas',
     ]);
     switch (choice) {
       case 1: await buscarPorCodigo(); break;
@@ -132,12 +135,12 @@ async function main() {
       case 3: await registrarQueja(); break;
       case 4: await verQuejasAbiertas(); break;
       case 0: running = false; break;
-      default: console.log(''Opcion invalida.'');
+      default: console.log('Opcion invalida.');
     }
   }
-  console.log(''Hasta luego!'');
+  console.log('Hasta luego!');
   process.exit(0);
 }
 
-main().catch(e => { console.error(''Error fatal:'', e.message); process.exit(1); });
+main().catch(e => { console.error('Error fatal:', e.message); process.exit(1); });
 

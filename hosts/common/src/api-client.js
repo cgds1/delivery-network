@@ -1,11 +1,11 @@
-const fetch = require(''node-fetch'');
+const fetch = require('node-fetch');
 
-const BASE_URL = process.env.API_URL || ''http://central-server:3000'';
+const BASE_URL = process.env.API_URL || 'http://central-server:3000';
 let authToken = null;
 
 async function request(method, path, body = null) {
-  const headers = { ''Content-Type'': ''application/json'' };
-  if (authToken) headers[''Authorization''] = `Bearer ${authToken}`;
+  const headers = { 'Content-Type': 'application/json' };
+  if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
 
   const res = await fetch(`${BASE_URL}${path}`, {
     method,
@@ -20,20 +20,20 @@ async function request(method, path, body = null) {
 
 module.exports = {
   async login(uid, password) {
-    const data = await request(''POST'', ''/api/auth/login'', { uid, password });
+    const data = await request('POST', '/api/auth/login', { uid, password });
     authToken = data.token;
     return data.user;
   },
-  getShipments: () => request(''GET'', ''/api/shipments''),
-  getShipment: (id) => request(''GET'', `/api/shipments/${id}`),
-  createShipment: (data) => request(''POST'', ''/api/shipments'', data),
+  getShipments: () => request('GET', '/api/shipments'),
+  getShipment: (id) => request('GET', `/api/shipments/${id}`),
+  createShipment: (data) => request('POST', '/api/shipments', data),
   updateStatus: (id, status, notes) =>
-    request(''PUT'', `/api/shipments/${id}/status`, { status, notes }),
-  getStats: () => request(''GET'', ''/api/admin/stats''),
-  getAllShipments: () => request(''GET'', ''/api/admin/shipments''),
-  getComplaints: () => request(''GET'', ''/api/customers/complaints''),
-  searchCustomer: (q) => request(''GET'', `/api/customers/search?q=${encodeURIComponent(q)}`),
-  createComplaint: (data) => request(''POST'', ''/api/customers/complaint'', data),
-  getEmployeeActivity: () => request(''GET'', ''/api/admin/activity''),
+    request('PUT', `/api/shipments/${id}/status`, { status, notes }),
+  getStats: () => request('GET', '/api/admin/stats'),
+  getAllShipments: () => request('GET', '/api/admin/shipments'),
+  getComplaints: () => request('GET', '/api/customers/complaints'),
+  searchCustomer: (q) => request('GET', `/api/customers/search?q=${encodeURIComponent(q)}`),
+  createComplaint: (data) => request('POST', '/api/customers/complaint', data),
+  getEmployeeActivity: () => request('GET', '/api/admin/activity'),
 };
 

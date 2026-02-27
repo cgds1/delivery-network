@@ -2,9 +2,9 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install common dependencies
-COPY common/package.json ./common/
-RUN cd common && npm install
+# Install common dependencies at /app root so all CLIs can resolve them
+COPY common/package.json ./
+RUN npm install
 
 # Copy common source
 COPY common/src/ ./common/src/

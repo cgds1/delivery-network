@@ -17,7 +17,7 @@ router.get('/stats', async (req, res) => {
       'SELECT COUNT(*)::int as total FROM shipments'
     );
     const { rows: complaintsRow } = await pool.query(
-      "SELECT COUNT(*) FILTER (WHERE status = 'abierta') AS open_complaints, COUNT(*) AS total_complaints FROM complaints"
+      "SELECT COUNT(*) FILTER (WHERE status = 'abierta')::int AS open_complaints, COUNT(*)::int AS total_complaints FROM complaints"
     );
 
     // Build by_status as a keyed object so CLI can access stats.by_status.recibido etc.

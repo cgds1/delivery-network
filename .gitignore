@@ -4,3 +4,4 @@ plans/
 postgres_data/
 ldap_data/
 ldap_config/
+tracking-frontend/package-lock.json

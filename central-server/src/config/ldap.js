@@ -30,31 +30,53 @@ async function authenticateUser(uid, password) {
           return reject(new Error('LDAP admin bind failed'));
         }
 
-        const opts = {
-          filter: `(member=uid=${uid},ou=People,${LDAP_BASE_DN})`,
+        // Search for user's full name (cn)
+        let cn = uid;
+        const userOpts = {
+          filter: `(uid=${uid})`,
           scope: 'sub',
           attributes: ['cn'],
         };
 
-        adminClient.search(`ou=Groups,${LDAP_BASE_DN}`, opts, (searchErr, res) => {
-          let role = null;
-          let cn = uid;
-
-          res.on('searchEntry', (entry) => {
-            role = entry.pojo.attributes.find(a => a.type === 'cn')?.values[0] || entry.pojo.objectName;
+        adminClient.search(`ou=People,${LDAP_BASE_DN}`, userOpts, (userSearchErr, userRes) => {
+          userRes.on('searchEntry', (entry) => {
+            cn = entry.pojo.attributes.find(a => a.type === 'cn')?.values[0] || uid;
           });
 
-          res.on('end', () => {
-            client.destroy();
-            adminClient.destroy();
-            if (!role) return reject(new Error('User has no group assigned'));
-            resolve({ uid, cn, role });
-          });
-
-          res.on('error', (e) => {
+          userRes.on('error', (e) => {
             client.destroy();
             adminClient.destroy();
             reject(e);
+          });
+
+          userRes.on('end', () => {
+            // Search for user's group membership (role)
+            const groupOpts = {
+              filter: `(member=uid=${uid},ou=People,${LDAP_BASE_DN})`,
+              scope: 'sub',
+              attributes: ['cn'],
+            };
+
+            adminClient.search(`ou=Groups,${LDAP_BASE_DN}`, groupOpts, (searchErr, res) => {
+              let role = null;
+
+              res.on('searchEntry', (entry) => {
+                role = entry.pojo.attributes.find(a => a.type === 'cn')?.values[0] || entry.pojo.objectName;
+              });
+
+              res.on('end', () => {
+                client.destroy();
+                adminClient.destroy();
+                if (!role) return reject(new Error('User has no group assigned'));
+                resolve({ uid, cn, role });
+              });
+
+              res.on('error', (e) => {
+                client.destroy();
+                adminClient.destroy();
+                reject(e);
+              });
+            });
           });
         });
       });

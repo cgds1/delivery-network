@@ -26,46 +26,71 @@ export default function TrackingResult({ data }) {
   const color = STATUS_COLORS[shipment.status] || '#6b7280';
 
   return (
-    <div>
-      {/* Status Badge */}
-      <div style={{ background: color, color: 'white', padding: '0.5rem 1rem',
-                    borderRadius: 8, display: 'inline-block', marginBottom: '1rem' }}>
-        {STATUS_LABELS[shipment.status] || shipment.status}
+    <div className="result-card">
+
+      {/* Header */}
+      <div className="result-header">
+        <div>
+          <div className="result-tracking-label">Codigo de seguimiento</div>
+          <div className="result-tracking-code">{shipment.tracking_code}</div>
+        </div>
+        <span className="status-badge" style={{ background: color }}>
+          {STATUS_LABELS[shipment.status] || shipment.status}
+        </span>
       </div>
 
-      {/* Shipment Details */}
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1.5rem' }}>
-        <tbody>
-          {[
-            ['Codigo', shipment.tracking_code],
-            ['Remitente', shipment.sender_name],
-            ['Destinatario', shipment.receiver_name],
-            ['Direccion', shipment.receiver_address],
-            ['Descripcion', shipment.description],
-            ['Peso', shipment.weight_kg ? `${shipment.weight_kg} kg` : '—'],
-          ].map(([label, value]) => (
-            <tr key={label}>
-              <td style={{ fontWeight: 'bold', padding: '4px 8px', color: '#374151' }}>{label}</td>
-              <td style={{ padding: '4px 8px' }}>{value || '—'}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* Details */}
+      <div className="details-section">
+        <div className="section-title">Informacion del envio</div>
+        <div className="details-grid">
+          <div className="detail-item">
+            <label>Remitente</label>
+            <p>{shipment.sender_name || '—'}</p>
+          </div>
+          <div className="detail-item">
+            <label>Destinatario</label>
+            <p>{shipment.receiver_name || '—'}</p>
+          </div>
+          <div className="detail-item full">
+            <label>Direccion de entrega</label>
+            <p>{shipment.receiver_address || '—'}</p>
+          </div>
+          <div className="detail-item">
+            <label>Descripcion</label>
+            <p>{shipment.description || '—'}</p>
+          </div>
+          <div className="detail-item">
+            <label>Peso</label>
+            <p>{shipment.weight_kg ? `${shipment.weight_kg} kg` : '—'}</p>
+          </div>
+        </div>
+      </div>
 
-      {/* History Timeline */}
-      <h3>Historial de Estados</h3>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        {history.map((h) => (
-          <li key={h.id} style={{ borderLeft: `3px solid ${STATUS_COLORS[h.status] || '#9ca3af'}`,
-                                  paddingLeft: '1rem', marginBottom: '0.75rem' }}>
-            <strong>{STATUS_LABELS[h.status] || h.status}</strong>
-            <span style={{ color: '#6b7280', marginLeft: '0.5rem', fontSize: '0.85rem' }}>
-              {formatDate(h.updated_at)}
-            </span>
-            {h.notes && <p style={{ margin: '0.25rem 0 0', color: '#374151' }}>{h.notes}</p>}
-          </li>
-        ))}
-      </ul>
+      {/* Timeline */}
+      <div className="timeline-section">
+        <div className="section-title">Historial de estados</div>
+        <div className="timeline">
+          {history.map((h) => {
+            const dotColor = STATUS_COLORS[h.status] || '#9ca3af';
+            return (
+              <div className="timeline-item" key={h.id}>
+                <div
+                  className="timeline-dot"
+                  style={{ background: dotColor, color: dotColor }}
+                />
+                <div className="timeline-row">
+                  <span className="timeline-status">
+                    {STATUS_LABELS[h.status] || h.status}
+                  </span>
+                  <span className="timeline-date">{formatDate(h.updated_at)}</span>
+                </div>
+                {h.notes && <p className="timeline-notes">{h.notes}</p>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
     </div>
   );
 }

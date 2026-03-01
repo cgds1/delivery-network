@@ -28,17 +28,20 @@ export default function TrackingForm({ onResult, onError }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-      <input
-        type="text"
-        placeholder="RDD-2026-00001"
-        value={code}
-        onChange={(e) => setCode(e.target.value.toUpperCase())}
-        style={{ flex: 1, padding: '0.5rem', fontSize: '1rem' }}
-      />
-      <button type="submit" disabled={loading || !code} style={{ padding: '0.5rem 1rem' }}>
-        {loading ? 'Buscando...' : 'Buscar'}
-      </button>
-    </form>
+    <div className="form-card">
+      <label className="form-label">Codigo de seguimiento</label>
+      <form onSubmit={handleSubmit} className="form-row">
+        <input
+          type="text"
+          className="form-input"
+          placeholder="RDD-2026-00001"
+          value={code}
+          onChange={(e) => setCode(e.target.value.toUpperCase())}
+        />
+        <button type="submit" className="form-btn" disabled={loading || !code}>
+          {loading ? 'Buscando...' : 'Rastrear'}
+        </button>
+      </form>
+    </div>
   );
 }

@@ -43,6 +43,7 @@ services:
       LDAP_BIND_DN: cn=admin,dc=reddedeliveries,dc=local
       LDAP_BIND_PASSWORD: ${LDAP_ADMIN_PASSWORD:-admin_secret}
       LDAP_BASE_DN: dc=reddedeliveries,dc=local
+      JWT_SECRET: ${JWT_SECRET:-redde_jwt_secret_change_in_prod}
       PORT: 3000
     depends_on:
       - postgres

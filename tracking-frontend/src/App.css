@@ -1,0 +1,361 @@
+/* ---- Reset & Base ---- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f1f5f9;
+  color: #0f172a;
+  min-height: 100vh;
+}
+
+/* ---- Layout ---- */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Header ---- */
+.header {
+  background: #0f172a;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.header-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.header-brand {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-title {
+  color: #f8fafc;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.header-subtitle {
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* ---- Hero ---- */
+.hero {
+  background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+  padding: 3.5rem 2rem 3rem;
+  text-align: center;
+  color: white;
+}
+
+.hero-title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+}
+
+.hero-subtitle {
+  color: #bfdbfe;
+  font-size: 0.95rem;
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
+/* ---- Main ---- */
+.main {
+  flex: 1;
+  padding: 2rem 1rem 3rem;
+  max-width: 760px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ---- Form Card ---- */
+.form-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 0.6rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.form-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.6rem;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #0f172a;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  background: #f8fafc;
+}
+
+.form-input:focus {
+  border-color: #1e40af;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+
+.form-input::placeholder {
+  color: #cbd5e1;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+
+.form-btn {
+  padding: 0.75rem 1.5rem;
+  background: #1e40af;
+  color: white;
+  border: none;
+  border-radius: 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.35);
+}
+
+.form-btn:hover:not(:disabled) {
+  background: #1d3a9e;
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.45);
+}
+
+.form-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.form-btn:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ---- Error ---- */
+.error-msg {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  padding: 0.75rem 1rem;
+  border-radius: 0.6rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+/* ---- Result Card ---- */
+.result-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+}
+
+.result-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.result-tracking-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.2rem;
+}
+
+.result-tracking-code {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: 0.06em;
+}
+
+.status-badge {
+  padding: 0.35rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* ---- Details Section ---- */
+.details-section {
+  padding: 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.section-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+}
+
+.detail-item label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 0.2rem;
+}
+
+.detail-item p {
+  font-size: 0.9rem;
+  color: #1e293b;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.detail-item.full {
+  grid-column: 1 / -1;
+}
+
+/* ---- Timeline ---- */
+.timeline-section {
+  padding: 1.5rem;
+}
+
+.timeline {
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0.38rem;
+  top: 0.6rem;
+  bottom: 0.6rem;
+  width: 2px;
+  background: #e2e8f0;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -1.5rem;
+  top: 0.25rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px currentColor;
+}
+
+.timeline-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.timeline-status {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.timeline-date {
+  font-size: 0.775rem;
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.timeline-notes {
+  font-size: 0.825rem;
+  color: #475569;
+  margin-top: 0.2rem;
+  line-height: 1.4;
+}
+
+/* ---- Footer ---- */
+.footer {
+  background: #0f172a;
+  color: #475569;
+  text-align: center;
+  padding: 1.25rem;
+  font-size: 0.775rem;
+  letter-spacing: 0.02em;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 540px) {
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  .result-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

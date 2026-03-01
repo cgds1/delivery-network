@@ -8,7 +8,7 @@ async function login() {
   const uid = readlineSync.question('Usuario: ');
   const password = readlineSync.question('Contrasena: ', { hideEchoBack: true });
   const user = await api.login(uid, password);
-  console.log(`\nBienvenido, ${user.name || uid}`);
+  console.log(`\nBienvenido, ${user.cn || uid}`);
   await new Promise(r => setTimeout(r, 1000));
   return user;
 }

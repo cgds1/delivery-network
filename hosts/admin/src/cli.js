@@ -9,7 +9,7 @@ async function login() {
   const uid = readlineSync.question('Usuario: ');
   const password = readlineSync.question('Contrasena: ', { hideEchoBack: true });
   const user = await api.login(uid, password);
-  console.log(`\nBienvenido, ${user.name || uid}`);
+  console.log(`\nBienvenido, ${user.cn || uid}`);
   await new Promise(r => setTimeout(r, 1000));
   return user;
 }
@@ -92,7 +92,7 @@ async function verPorEstado() {
           s.tracking_code,
           s.sender_name,
           s.receiver_name,
-          `${s.weight} kg`,
+          `${s.weight_kg} kg`,
           formatDate(s.created_at),
         ])
       );

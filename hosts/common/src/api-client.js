@@ -1,6 +1,8 @@
 const fetch = require('node-fetch');
+const http = require('http');
 
 const BASE_URL = process.env.API_URL || 'http://central-server:3000';
+const agent = new http.Agent({ keepAlive: false });
 let authToken = null;
 
 async function request(method, path, body = null) {
@@ -11,6 +13,7 @@ async function request(method, path, body = null) {
     method,
     headers,
     body: body ? JSON.stringify(body) : undefined,
+    agent,
   });
 
   const data = await res.json();
